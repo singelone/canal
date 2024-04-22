@@ -1,5 +1,9 @@
 package com.alibaba.otter.canal.connector.core.spi;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
@@ -16,10 +20,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * SPI 类加载器
@@ -108,6 +108,9 @@ public class ExtensionLoader<T> {
         if ("true".equals(name)) {
             return getDefaultExtension(spiDir, standbyDir);
         }
+        if ("kafka".equals(name)) {
+            return createExtension(name, spiDir, standbyDir);
+        }
         Holder<Object> holder = cachedInstances.get(name);
         if (holder == null) {
             cachedInstances.putIfAbsent(name, new Holder<>());
@@ -131,6 +134,9 @@ public class ExtensionLoader<T> {
         if (name == null || name.length() == 0) throw new IllegalArgumentException("Extension name == null");
         if ("true".equals(name)) {
             return getDefaultExtension(spiDir, standbyDir);
+        }
+        if ("kafka".equals(name)) {
+            return createExtension(name, key, spiDir, standbyDir);
         }
         String extKey = name + "-" + StringUtils.trimToEmpty(key);
         Holder<Object> holder = cachedInstances.get(extKey);
@@ -170,6 +176,9 @@ public class ExtensionLoader<T> {
                                             + ")  could not be instantiated: class could not be found");
         }
         try {
+            if ("kafka".equalsIgnoreCase(name)) {
+                return (T) clazz.newInstance();
+            }
             T instance = (T) EXTENSION_INSTANCES.get(clazz);
             if (instance == null) {
                 EXTENSION_INSTANCES.putIfAbsent(clazz, (T) clazz.newInstance());
@@ -190,6 +199,9 @@ public class ExtensionLoader<T> {
                                             + ")  could not be instantiated: class could not be found");
         }
         try {
+            if ("kafka".equalsIgnoreCase(name)) {
+                return (T) clazz.newInstance();
+            }
             T instance = (T) EXTENSION_KEY_INSTANCE.get(name + "-" + key);
             if (instance == null) {
                 EXTENSION_KEY_INSTANCE.putIfAbsent(name + "-" + key, clazz.newInstance());

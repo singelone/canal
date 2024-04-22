@@ -1,22 +1,5 @@
 package com.alibaba.otter.canal.client.adapter.es8x.support;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.cluster.metadata.MappingMetadata;
-import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.alibaba.otter.canal.client.adapter.es.core.config.ESSyncConfig;
 import com.alibaba.otter.canal.client.adapter.es.core.config.ESSyncConfig.ESMapping;
 import com.alibaba.otter.canal.client.adapter.es.core.config.SchemaItem;
@@ -32,6 +15,21 @@ import com.alibaba.otter.canal.client.adapter.es.core.support.ESTemplate;
 import com.alibaba.otter.canal.client.adapter.es8x.support.ESConnection.ESSearchRequest;
 import com.alibaba.otter.canal.client.adapter.support.DatasourceConfig;
 import com.alibaba.otter.canal.client.adapter.support.Util;
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.cluster.metadata.MappingMetadata;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 public class ES8xTemplate implements ESTemplate {
 
@@ -166,9 +164,17 @@ public class ES8xTemplate implements ESTemplate {
     @Override
     public void commit() {
         if (getBulk().numberOfActions() > 0) {
-            ESBulkResponse response = getBulk().bulk();
-            if (response.hasFailures()) {
-                response.processFailBulkResponse("ES sync commit error ");
+            try {
+                ESBulkResponse response = getBulk().bulk();
+                if (response.hasFailures()) {
+                    response.processFailBulkResponse("ES sync commit error ");
+                }
+            } catch (Exception e) {
+                if (e.getMessage().contains("200 OK")) {
+                    logger.info("未成功解析ES返回值");
+                } else {
+                    throw new RuntimeException(e);
+                }
             }
             resetBulkRequestBuilder();
         }

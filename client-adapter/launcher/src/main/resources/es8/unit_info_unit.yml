@@ -1,0 +1,44 @@
+dataSourceKey: defaultDS
+destination: ykz-uc-admin_sys_unitinfo
+groupId: g5
+esMapping:
+  _index: ykz.unit.info.index-2024.04.11-000001
+  _type: _doc
+  _id: ID
+  upsert: true
+#  pk: ID
+  sql: "SELECT
+	u.ID,
+	u.NAME AS `NAME`,
+	u.FULL_NAME,
+	u.CODE AS `CODE`,
+	u.PARENT_ID,
+	u.LEVEL_CODE,
+	u.TEL,
+	u.ORDER_NO,
+	u.STATE,
+	u.UNITNOTE,
+	u.UNIT_ADDRESS,
+	u.CONTACT,
+	u.OPEN_ID,
+	u.CREATE_TIME,
+	u.UPDATE_TIME,
+	u.CREDIT_CODE,
+	u.gov_division_code,
+	u.gov_business_strip_codes,
+	u.gov_institution_level_code,
+	u.principal,
+	u.post_code,
+	u.zd_unit_code,
+	u.org_type,
+	u.is_parent,
+	u.area_level,
+	u.principal_code,
+	u.contact_code,
+	u.is_special
+FROM
+	sys_unitinfo u"
+  #  objFields:
+  #    _labels: array:;
+  etlCondition: "where u.ID>={}"
+  commitBatch: 3000

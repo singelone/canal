@@ -1,0 +1,90 @@
+dataSourceKey: defaultDS
+destination: ykz-uc-admin_sys_userinfo
+groupId: g4
+esMapping:
+  _index: ykz.unit.user.info.index-2023.10.13-000001
+  _type: _doc
+  _id: ID
+  upsert: true
+  #pk: id
+  sql: "SELECT
+	uu.ID AS ID,
+	uu.IS_MAIN_JOB,
+	uu.JOIN_TIME,
+	uu.REMARK,
+	uu.WORK_NO,
+	uu.STATE AS job_status,
+	uu.ORDERNO,
+	uu.CREATE_TIME AS pos_create_time,
+	uu.UPDATE_TIME AS pos_update_time,
+	uu.EMAIL AS pos_email,
+	uu.TEL AS pos_tel,
+	uu.JOB_NAME,
+	uu.zd_visibility_code,
+	uu.zd_visibility_code_name,
+	uu.pos_address,
+	uu.pos_job_rank_code,
+	uu.source,
+	ui.ID AS USER_ID,
+	ui.FULLNAME AS user_full_name,
+	ui.ACCOUNT,
+	ui.TEL,
+	ui.STATUS AS `STATUS`,
+	ui.SEX,
+	ui.BIRTHDAY,
+	ui.EMAIL,
+	ui.ADDRESS,
+	ui.ZWDD_ID,
+	ui.OPEN_ID AS user_open_id,
+	ui.ID_CARD,
+	ui.CREATE_TIME AS user_create_time,
+	ui.UPDATE_TIME AS user_update_time,
+	ui.zd_user_code,
+	ui.account_active_level,
+	ui.zd_media_id,
+	ui.political_status,
+	ui.user_post_code,
+	ui.job_level,
+	ui.is_leave,
+	ui.is_admin,
+	ui.source AS user_source,
+	u.ID AS dept_id,
+	u.NAME AS dept_name,
+	u.FULL_NAME AS dept_full_name,
+	u.CODE AS `CODE`,
+	u.PARENT_ID,
+	u.LEVEL_CODE,
+	u.TEL AS unit_tel,
+	u.ORDER_NO,
+	u.STATE,
+	u.UNITNOTE,
+	u.UNIT_ADDRESS,
+	u.CONTACT,
+	u.OPEN_ID AS unit_open_id,
+	u.CREATE_TIME AS unit_create_time,
+	u.UPDATE_TIME AS unit_update_time,
+	u.CREDIT_CODE,
+	u.gov_division_code,
+	u.gov_business_strip_codes,
+	u.gov_institution_level_code,
+	u.principal,
+	u.post_code,
+	u.zd_unit_code,
+	u.org_type,
+	u.is_parent,
+	u.area_level,
+	u.principal_code,
+	u.contact_code,
+	u.is_special,
+	unit.FULL_NAME AS unit_full_name,
+	unit.`NAME` AS unit_name,
+	uu.UNIT_ID 
+FROM
+	sys_unituser uu
+	LEFT JOIN sys_unitinfo u ON uu.DEPT_ID = u.ID
+	LEFT JOIN sys_unitinfo unit ON uu.UNIT_ID = unit.id
+	LEFT JOIN sys_userinfo ui ON uu.USER_ID = ui.ID"
+  #  objFields:
+  #    _labels: array:;
+  etlCondition: "where uu.ID>={} or u.ID>={} or ui.ID>={}"
+  commitBatch: 3000

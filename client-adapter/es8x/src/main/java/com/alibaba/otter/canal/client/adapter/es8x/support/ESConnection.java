@@ -1,18 +1,12 @@
 package com.alibaba.otter.canal.client.adapter.es8x.support;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
+import co.elastic.clients.transport.TransportUtils;
+import com.alibaba.otter.canal.client.adapter.es.core.support.ESBulkRequest;
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkRequestBuilder;
@@ -26,7 +20,10 @@ import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateRequestBuilder;
-import org.elasticsearch.client.*;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestClient;
+import org.elasticsearch.client.RestClientBuilder;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.GetMappingsRequest;
 import org.elasticsearch.client.indices.GetMappingsResponse;
 import org.elasticsearch.cluster.metadata.MappingMetadata;
@@ -36,7 +33,16 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.otter.canal.client.adapter.es.core.support.ESBulkRequest;
+import javax.net.ssl.SSLContext;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ES 连接器, 只支持 Rest 方式
@@ -51,19 +57,40 @@ public class ESConnection {
     private RestHighLevelClient restHighLevelClient;
 
     public ESConnection(String[] hosts, Map<String, String> properties) throws UnknownHostException{
-        HttpHost[] httpHosts = Arrays.stream(hosts).map(this::createHttpHost).toArray(HttpHost[]::new);
-        RestClientBuilder restClientBuilder = RestClient.builder(httpHosts);
+        final HttpHost[] httpHosts = Arrays.stream(hosts)
+                .map(HttpHost::create)
+                .filter(Objects::nonNull).toArray(HttpHost[]::new);
         String nameAndPwd = properties.get("security.auth");
-        if (StringUtils.isNotEmpty(nameAndPwd) && nameAndPwd.contains(":")) {
-            String[] nameAndPwdArr = nameAndPwd.split(":");
-            final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-            credentialsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials(nameAndPwdArr[0], nameAndPwdArr[1]));
-            restClientBuilder.setHttpClientConfigCallback(
-                httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider));
+        String[] nameAndPwdArr = nameAndPwd.split(":");
+        // 生成凭证
+        final BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(nameAndPwdArr[0], nameAndPwdArr[1]));
+
+        try {
+            SSLContext sslContext = null;
+            String cert = properties.get("security.cert");
+            logger.info("es8:cert:{}", cert);
+
+            try (InputStream stream = getClass().getClassLoader().getResourceAsStream(cert);) {
+                sslContext = TransportUtils.sslContextFromHttpCaCrt(stream);
+            }
+
+            // 返回带验证的客户端
+            SSLContext finalSslContext = sslContext;
+            restHighLevelClient = new RestHighLevelClient(RestClient.builder(httpHosts).setHttpClientConfigCallback(new RestClientBuilder.HttpClientConfigCallback() {
+                @Override
+                public HttpAsyncClientBuilder customizeHttpClient(HttpAsyncClientBuilder httpAsyncClientBuilder) {
+                    httpAsyncClientBuilder.disableAuthCaching();
+                    httpAsyncClientBuilder.setSSLContext(finalSslContext);
+                    httpAsyncClientBuilder.setDefaultCredentialsProvider(credentialsProvider);
+                    httpAsyncClientBuilder.setKeepAliveStrategy((response, context) -> TimeUnit.MINUTES.toMillis(3));
+                    return httpAsyncClientBuilder;
+                }
+            }));
+            logger.info("完成初始化ES8连接");
+        } catch (Exception e) {
+            logger.error("初始化ES8失败");
         }
-        restHighLevelClient = new RestHighLevelClientBuilder(restClientBuilder.build()).setApiCompatibilityMode(true)
-            .build();
     }
 
     public void close() {

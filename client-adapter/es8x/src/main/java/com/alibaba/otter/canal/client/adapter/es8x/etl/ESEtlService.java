@@ -1,19 +1,5 @@
 package com.alibaba.otter.canal.client.adapter.es8x.etl;
 
-import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.sql.DataSource;
-
-import org.apache.commons.lang.StringUtils;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
-
 import com.alibaba.otter.canal.client.adapter.es.core.config.ESSyncConfig;
 import com.alibaba.otter.canal.client.adapter.es.core.config.ESSyncConfig.ESMapping;
 import com.alibaba.otter.canal.client.adapter.es.core.config.SchemaItem.FieldItem;
@@ -29,6 +15,18 @@ import com.alibaba.otter.canal.client.adapter.support.AbstractEtlService;
 import com.alibaba.otter.canal.client.adapter.support.AdapterConfig;
 import com.alibaba.otter.canal.client.adapter.support.EtlResult;
 import com.alibaba.otter.canal.client.adapter.support.Util;
+import org.apache.commons.lang.StringUtils;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.SearchHit;
+
+import javax.sql.DataSource;
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * ES ETL Service
@@ -186,9 +184,13 @@ public class ESEtlService extends AbstractEtlService {
                         }
                     }
                 } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                    errMsg.add(mapping.getIndex() + " etl failed! ==>" + e.getMessage());
-                    throw new RuntimeException(e);
+                    if (e.getMessage().contains("200 OK")) {
+                        logger.info("无法解析ES返回值,但数据已同步");
+                    } else {
+                        logger.error(e.getMessage(), e);
+                        errMsg.add(mapping.getIndex() + " etl failed! ==>" + e.getMessage());
+                        throw new RuntimeException(e);
+                    }
                 }
                 return count;
             });

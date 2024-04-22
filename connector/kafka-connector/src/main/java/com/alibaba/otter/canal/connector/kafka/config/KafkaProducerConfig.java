@@ -1,9 +1,9 @@
 package com.alibaba.otter.canal.connector.kafka.config;
 
+import com.alibaba.otter.canal.connector.core.config.MQProperties;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import com.alibaba.otter.canal.connector.core.config.MQProperties;
 
 /**
  * Kafka producer 配置类
@@ -15,9 +15,9 @@ public class KafkaProducerConfig extends MQProperties {
 
     private Map<String, Object> kafkaProperties = new LinkedHashMap<>();
 
-    private boolean             kerberosEnabled = false;
-    private String              krb5File;
-    private String              jaasFile;
+    private boolean kerberosEnabled = false;
+    private String krb5File;
+    private String jaasFile;
 
     public Map<String, Object> getKafkaProperties() {
         return kafkaProperties;

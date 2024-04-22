@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8091
 spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -7,8 +7,8 @@ spring:
     default-property-inclusion: non_null
 
 canal.conf:
-  mode: tcp #tcp kafka rocketMQ rabbitMQ
-  flatMessage: true
+  mode: kafka #tcp kafka rocketMQ rabbitMQ
+  flatMessage: false
   zookeeperHosts:
   syncBatchSize: 1000
   retries: -1
@@ -23,7 +23,7 @@ canal.conf:
     canal.tcp.username:
     canal.tcp.password:
     # kafka consumer
-    kafka.bootstrap.servers: 127.0.0.1:9092
+    kafka.bootstrap.servers: 172.18.11.12:9092
     kafka.enable.auto.commit: false
     kafka.auto.commit.interval.ms: 1000
     kafka.auto.offset.reset: latest
@@ -46,17 +46,59 @@ canal.conf:
     rabbitmq.password:
     rabbitmq.resource.ownerId:
 
-#  srcDataSources:
-#    defaultDS:
-#      url: jdbc:mysql://127.0.0.1:3306/mytest?useUnicode=true
-#      username: root
-#      password: 121212
+  srcDataSources:
+    defaultDS:
+      url: jdbc:mysql://172.18.11.7:3306/ykz-uc-admin?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
+      username: canal
+      password: canal
   canalAdapters:
-  - instance: example # canal instance Name or mq topic name
+  - instance: ykz-uc-admin_sys_unituser # canal instance Name or mq topic name
     groups:
-    - groupId: g1
+    - groupId: g2
       outerAdapters:
       - name: logger
+      - name: es8
+        hosts: https://172.18.11.219:9200 # 127.0.0.1:9200 for rest mode
+        properties:
+          mode: rest # or rest
+          security.auth: elastic:yoTka4TCA+dX*2X82aMH #  only used for rest mode
+          security.cert: cert/http_ca_dev.crt
+          cluster.name: elasticsearch
+  - instance: ykz-uc-admin_sys_unitinfo # canal instance Name or mq topic name
+    groups:
+      - groupId: g3
+        outerAdapters:
+          - name: logger
+          - name: es8
+            hosts: https://172.18.11.219:9200 # 127.0.0.1:9200 for rest mode
+            properties:
+              mode: rest # or rest
+              security.auth: elastic:yoTka4TCA+dX*2X82aMH #  only used for rest mode
+              security.cert: cert/http_ca_dev.crt
+              cluster.name: elasticsearch
+      - groupId: g5
+        outerAdapters:
+          - name: logger
+          - name: es8
+            hosts: https://172.18.11.219:9200 # 127.0.0.1:9200 for rest mode
+            properties:
+              mode: rest # or rest
+              security.auth: elastic:yoTka4TCA+dX*2X82aMH #  only used for rest mode
+              security.cert: cert/http_ca_dev.crt
+              cluster.name: elasticsearch
+  - instance: ykz-uc-admin_sys_userinfo # canal instance Name or mq topic name
+    groups:
+      - groupId: g4
+        outerAdapters:
+          - name: logger
+          - name: es8
+            hosts: https://172.18.11.219:9200 # 127.0.0.1:9200 for rest mode
+            properties:
+              mode: rest # or rest
+              security.auth: elastic:yoTka4TCA+dX*2X82aMH #  only used for rest mode
+              security.cert: cert/http_ca_dev.crt
+              cluster.name: elasticsearch
+
 #      - name: rdb
 #        key: mysql1
 #        properties:

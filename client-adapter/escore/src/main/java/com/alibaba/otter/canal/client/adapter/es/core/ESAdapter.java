@@ -1,14 +1,5 @@
 package com.alibaba.otter.canal.client.adapter.es.core;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang.StringUtils;
-
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.otter.canal.client.adapter.OuterAdapter;
 import com.alibaba.otter.canal.client.adapter.es.core.config.ESSyncConfig;
@@ -19,6 +10,14 @@ import com.alibaba.otter.canal.client.adapter.es.core.monitor.ESConfigMonitor;
 import com.alibaba.otter.canal.client.adapter.es.core.service.ESSyncService;
 import com.alibaba.otter.canal.client.adapter.es.core.support.ESTemplate;
 import com.alibaba.otter.canal.client.adapter.support.*;
+import org.apache.commons.lang.StringUtils;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * ES外部适配器
