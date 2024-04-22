@@ -2,7 +2,7 @@ dataSourceKey: defaultDS
 destination: ykz-uc-admin_sys_unitinfo
 groupId: g5
 esMapping:
-  _index: ykz.unit.info.index-2024.04.11-000001
+  _index: ykz.unit.info.index
   _type: _doc
   _id: ID
   upsert: true
@@ -35,9 +35,13 @@ esMapping:
 	u.area_level,
 	u.principal_code,
 	u.contact_code,
-	u.is_special
+	u.is_special,
+	p.`NAME` AS parent_name,
+	p.`FULL_NAME` AS parent_full_name,
+	p.`zd_unit_code` AS parent_zd_unit_code 
 FROM
-	sys_unitinfo u"
+	sys_unitinfo u
+	LEFT JOIN sys_unitinfo p ON u.PARENT_ID = p.ID"
   #  objFields:
   #    _labels: array:;
   etlCondition: "where u.ID>={}"

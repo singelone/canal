@@ -2,7 +2,7 @@ dataSourceKey: defaultDS
 destination: ykz-uc-admin_sys_unituser
 groupId: g2
 esMapping:
-  _index: ykz.unit.user.info.index-2023.10.13-000001
+  _index: ykz.unit.user.info.index
   _type: _doc
   _id: ID
   upsert: true

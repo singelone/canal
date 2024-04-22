@@ -1,0 +1,248 @@
+POST /_index_template/template_ykz.unit.user.info.index
+{
+  "index_patterns": [
+    "ykz.unit.user.info.index*"
+  ],
+  "template": {
+    "aliases": {
+      "ykz.unit.user.info.index.search": {}
+    },
+    "settings": {
+      "index.number_of_shards": 3,
+      "index.number_of_replicas": 1
+    },
+    "mappings": {
+      "properties": {
+        "id": {
+          "type": "long"
+        },
+        "IS_MAIN_JOB": {
+          "type": "keyword"
+        },
+        "JOIN_TIME": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z' || epoch_millis || yyyy-MM-dd'T'HH:mm:ss+08:00"
+        },
+        "REMARK": {
+          "type": "text",
+          "fields": {
+            "keyword": {
+              "type": "keyword",
+              "ignore_above": 256
+            }
+          }
+        },
+        "WORK_NO": {
+          "type": "keyword"
+        },
+        "job_status": {
+          "type": "keyword"
+        },
+        "ORDERNO": {
+          "type": "keyword"
+        },
+        "pos_create_time": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z' || epoch_millis || yyyy-MM-dd'T'HH:mm:ss+08:00"
+        },
+        "pos_update_time": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z' || epoch_millis || yyyy-MM-dd'T'HH:mm:ss+08:00"
+        },
+        "pos_email": {
+          "type": "keyword"
+        },
+        "pos_tel": {
+          "type": "keyword"
+        },
+        "JOB_NAME": {
+          "type": "keyword"
+        },
+        "zd_visibility_code": {
+          "type": "keyword"
+        },
+        "zd_visibility_code_name": {
+          "type": "keyword"
+        },
+        "pos_address": {
+          "type": "keyword"
+        },
+        "pos_job_rank_code": {
+          "type": "keyword"
+        },
+        "source": {
+          "type": "keyword"
+        },
+        "USER_ID": {
+          "type": "long"
+        },
+        "user_full_name": {
+          "type": "keyword"
+        },
+        "ACCOUNT": {
+          "type": "keyword"
+        },
+        "TEL": {
+          "type": "keyword"
+        },
+        "STATUS": {
+          "type": "keyword"
+        },
+        "SEX": {
+          "type": "keyword"
+        },
+        "BIRTHDAY": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z' || epoch_millis || yyyy-MM-dd'T'HH:mm:ss+08:00"
+        },
+        "EMAIL": {
+          "type": "keyword"
+        },
+        "ADDRESS": {
+          "type": "keyword"
+        },
+        "ZWDD_ID": {
+          "type": "keyword"
+        },
+        "user_open_id": {
+          "type": "keyword"
+        },
+        "ID_CARD": {
+          "type": "keyword"
+        },
+        "user_create_time": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z' || epoch_millis || yyyy-MM-dd'T'HH:mm:ss+08:00"
+        },
+        "user_update_time": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z' || epoch_millis || yyyy-MM-dd'T'HH:mm:ss+08:00"
+        },
+        "zd_user_code": {
+          "type": "keyword"
+        },
+        "account_active_level": {
+          "type": "keyword"
+        },
+        "zd_media_id": {
+          "type": "keyword"
+        },
+        "political_status": {
+          "type": "keyword"
+        },
+        "user_post_code": {
+          "type": "keyword"
+        },
+        "job_level": {
+          "type": "keyword"
+        },
+        "is_leave": {
+          "type": "keyword"
+        },
+        "is_admin": {
+          "type": "keyword"
+        },
+        "user_source": {
+          "type": "keyword"
+        },
+        "dept_id": {
+          "type": "long"
+        },
+        "dept_name": {
+          "type": "keyword"
+        },
+        "dept_full_name": {
+          "type": "keyword"
+        },
+        "CODE": {
+          "type": "keyword"
+        },
+        "PARENT_ID": {
+          "type": "long"
+        },
+        "LEVEL_CODE": {
+          "type": "keyword"
+        },
+        "unit_tel": {
+          "type": "keyword"
+        },
+        "dept_order_no": {
+          "type": "keyword"
+        },
+        "STATE": {
+          "type": "keyword"
+        },
+        "UNITNOTE": {
+          "type": "keyword"
+        },
+        "UNIT_ADDRESS": {
+          "type": "keyword"
+        },
+        "CONTACT": {
+          "type": "keyword"
+        },
+        "unit_open_id": {
+          "type": "keyword"
+        },
+        "unit_create_time": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z' || epoch_millis || yyyy-MM-dd'T'HH:mm:ss+08:00"
+        },
+        "unit_update_time": {
+          "type": "date",
+          "format": "yyyy-MM-dd'T'HH:mm:ss.SSS'Z' || epoch_millis || yyyy-MM-dd'T'HH:mm:ss+08:00"
+        },
+        "CREDIT_CODE": {
+          "type": "keyword"
+        },
+        "gov_division_code": {
+          "type": "keyword"
+        },
+        "gov_business_strip_codes": {
+          "type": "keyword"
+        },
+        "gov_institution_level_code": {
+          "type": "keyword"
+        },
+        "principal": {
+          "type": "keyword"
+        },
+        "post_code": {
+          "type": "keyword"
+        },
+        "zd_unit_code": {
+          "type": "keyword"
+        },
+        "org_type": {
+          "type": "keyword"
+        },
+        "is_parent": {
+          "type": "keyword"
+        },
+        "area_level": {
+          "type": "keyword"
+        },
+        "principal_code": {
+          "type": "keyword"
+        },
+        "contact_code": {
+          "type": "keyword"
+        },
+        "is_special": {
+          "type": "keyword"
+        },
+        "unit_full_name": {
+          "type": "keyword"
+        },
+        "unit_name": {
+          "type": "keyword"
+        },
+        "UNIT_ID": {
+          "type": "long"
+        }
+      }
+    }
+  }
+}
+
+put ykz.unit.user.info.index
