@@ -1,5 +1,5 @@
 dataSourceKey: defaultDS
-destination: ykz-uc-admin_sys_unitinfo
+destination: ykz_uc_admin_sys_unitinfo
 groupId: g5
 esMapping:
   _index: ykz.unit.info.index

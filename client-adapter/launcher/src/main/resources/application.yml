@@ -23,7 +23,7 @@ canal.conf:
     canal.tcp.username:
     canal.tcp.password:
     # kafka consumer
-    kafka.bootstrap.servers: 172.18.11.12:9092
+    kafka.bootstrap.servers: 10.48.8.224:9092,10.48.8.225:9092,10.48.8.226:9092
     kafka.enable.auto.commit: false
     kafka.auto.commit.interval.ms: 1000
     kafka.auto.offset.reset: latest
@@ -48,55 +48,55 @@ canal.conf:
 
   srcDataSources:
     defaultDS:
-      url: jdbc:mysql://172.18.11.7:3306/ykz-uc-admin?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
+      url: jdbc:mysql://pxc-unrcriab4pafoc.polarx.rds.ops.alicloud.cqxczwy.com:3306/ykz_uc_admin?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
       username: canal
-      password: canal
+      password: x(UJJU452=7wO)b
   canalAdapters:
-  - instance: ykz-uc-admin_sys_unituser # canal instance Name or mq topic name
+  - instance: ykz_uc_admin_sys_unituser # canal instance Name or mq topic name
     groups:
-    - groupId: g2
-      outerAdapters:
-      - name: logger
-      - name: es8
-        hosts: https://172.18.11.219:9200 # 127.0.0.1:9200 for rest mode
-        properties:
-          mode: rest # or rest
-          security.auth: elastic:yoTka4TCA+dX*2X82aMH #  only used for rest mode
-          security.cert: cert/http_ca_dev.crt
-          cluster.name: elasticsearch
-  - instance: ykz-uc-admin_sys_unitinfo # canal instance Name or mq topic name
+      - groupId: g2
+        outerAdapters:
+          - name: logger
+          - name: es8
+            hosts: https://10.48.8.203:9200,https://10.48.8.204:9200,https://10.48.8.205:9200 # 127.0.0.1:9200 for rest mode
+            properties:
+              mode: rest # or rest
+              security.auth: elastic:-2IZZXnyhi6IRqev+Z71 #  only used for rest mode
+              security.cert: cert/http_ca_prod.crt
+              cluster.name: elasticsearch
+  - instance: ykz_uc_admin_sys_unitinfo # canal instance Name or mq topic name
     groups:
       - groupId: g3
         outerAdapters:
           - name: logger
           - name: es8
-            hosts: https://172.18.11.219:9200 # 127.0.0.1:9200 for rest mode
+            hosts: https://10.48.8.203:9200,https://10.48.8.204:9200,https://10.48.8.205:9200 # 127.0.0.1:9200 for rest mode
             properties:
               mode: rest # or rest
-              security.auth: elastic:yoTka4TCA+dX*2X82aMH #  only used for rest mode
-              security.cert: cert/http_ca_dev.crt
+              security.auth: elastic:-2IZZXnyhi6IRqev+Z71 #  only used for rest mode
+              security.cert: cert/http_ca_prod.crt
               cluster.name: elasticsearch
       - groupId: g5
         outerAdapters:
           - name: logger
           - name: es8
-            hosts: https://172.18.11.219:9200 # 127.0.0.1:9200 for rest mode
+            hosts: https://10.48.8.203:9200,https://10.48.8.204:9200,https://10.48.8.205:9200 # 127.0.0.1:9200 for rest mode
             properties:
               mode: rest # or rest
-              security.auth: elastic:yoTka4TCA+dX*2X82aMH #  only used for rest mode
-              security.cert: cert/http_ca_dev.crt
+              security.auth: elastic:-2IZZXnyhi6IRqev+Z71 #  only used for rest mode
+              security.cert: cert/http_ca_prod.crt
               cluster.name: elasticsearch
-  - instance: ykz-uc-admin_sys_userinfo # canal instance Name or mq topic name
+  - instance: ykz_uc_admin_sys_userinfo # canal instance Name or mq topic name
     groups:
       - groupId: g4
         outerAdapters:
           - name: logger
           - name: es8
-            hosts: https://172.18.11.219:9200 # 127.0.0.1:9200 for rest mode
+            hosts: https://10.48.8.203:9200,https://10.48.8.204:9200,https://10.48.8.205:9200 # 127.0.0.1:9200 for rest mode
             properties:
               mode: rest # or rest
-              security.auth: elastic:yoTka4TCA+dX*2X82aMH #  only used for rest mode
-              security.cert: cert/http_ca_dev.crt
+              security.auth: elastic:-2IZZXnyhi6IRqev+Z71 #  only used for rest mode
+              security.cert: cert/http_ca_prod.crt
               cluster.name: elasticsearch
 
 #      - name: rdb
