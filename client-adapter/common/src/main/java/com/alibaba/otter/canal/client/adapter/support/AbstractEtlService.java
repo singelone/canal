@@ -1,18 +1,16 @@
 package com.alibaba.otter.canal.client.adapter.support;
 
+import com.alibaba.druid.pool.DruidDataSource;
+import com.google.common.base.Joiner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicLong;
-
-import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.alibaba.druid.pool.DruidDataSource;
-import com.google.common.base.Joiner;
 
 public abstract class AbstractEtlService {
 
@@ -71,6 +69,7 @@ public abstract class AbstractEtlService {
                 return count == null ? 0L : count;
             });
 
+            logger.info("本次导入前查询总数:{}", cnt);
             // 当大于1万条记录时开启多线程
             if (cnt >= 10000) {
                 int threadCount = Runtime.getRuntime().availableProcessors();
@@ -78,7 +77,7 @@ public abstract class AbstractEtlService {
                 long offset;
                 long size = CNT_PER_TASK;
                 long workerCnt = cnt / size + (cnt % size == 0 ? 0 : 1);
-
+                logger.info("workerCnt {} for cnt {} threadCount {}", workerCnt, cnt, threadCount);
                 if (logger.isDebugEnabled()) {
                     logger.debug("workerCnt {} for cnt {} threadCount {}", workerCnt, cnt, threadCount);
                 }
@@ -88,6 +87,7 @@ public abstract class AbstractEtlService {
                 for (long i = 0; i < workerCnt; i++) {
                     offset = size * i;
                     String sqlFinal = sql + " LIMIT " + offset + "," + size;
+                    logger.info("导入数据sql为:{}", sqlFinal);
                     Future<Boolean> future = executor.submit(() -> executeSqlImport(dataSource,
                         sqlFinal,
                         values,
