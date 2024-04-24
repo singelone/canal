@@ -55,7 +55,7 @@ esMapping:
 	u.PARENT_ID,
 	u.LEVEL_CODE,
 	u.TEL AS unit_tel,
-	u.ORDER_NO,
+	u.ORDER_NO AS dept_order_no,
 	u.STATE,
 	u.UNITNOTE,
 	u.UNIT_ADDRESS,
