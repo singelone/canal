@@ -51,6 +51,7 @@ canal.conf:
       url: jdbc:mysql://pxc-unrcriab4pafoc.polarx.rds.ops.alicloud.cqxczwy.com:3306/ykz_uc_admin?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
       username: canal
       password: x(UJJU452=7wO)b
+      max-active: 20
   canalAdapters:
   - instance: ykz_uc_admin_sys_unituser # canal instance Name or mq topic name
     groups:
