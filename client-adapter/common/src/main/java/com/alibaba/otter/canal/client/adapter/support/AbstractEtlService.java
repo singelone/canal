@@ -50,7 +50,7 @@ public abstract class AbstractEtlService {
 
                 sql += " " + etlCondition;
             }
-
+            logger.info("etl sql : {}", sql);
             if (logger.isDebugEnabled()) {
                 logger.debug("etl sql : {}", sql);
             }
