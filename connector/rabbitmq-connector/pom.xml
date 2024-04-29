@@ -67,7 +67,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.8</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -75,7 +74,7 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <tasks>
+                            <target>
                                 <copy todir="${project.basedir}/../../deployer/target/canal/plugin" overwrite="true">
                                     <fileset dir="${project.basedir}/target" erroronmissingdir="true">
                                         <include name="connector.rabbitmq-${project.version}-jar-with-dependencies.jar" />
@@ -86,7 +85,7 @@
                                         <include name="connector.rabbitmq-${project.version}-jar-with-dependencies.jar" />
                                     </fileset>
                                 </copy>
-                            </tasks>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>
