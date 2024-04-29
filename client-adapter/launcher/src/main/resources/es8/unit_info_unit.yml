@@ -41,7 +41,9 @@ esMapping:
 	p.`zd_unit_code` AS parent_zd_unit_code 
 FROM
 	sys_unitinfo u
-	LEFT JOIN sys_unitinfo p ON u.PARENT_ID = p.ID"
+	LEFT JOIN sys_unitinfo p ON u.PARENT_ID = p.ID 
+	order by u.id"
+
   #  objFields:
   #    _labels: array:;
   etlCondition: "where u.ID>={}"

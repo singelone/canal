@@ -10,6 +10,8 @@ import com.alibaba.otter.canal.client.adapter.support.EtlResult;
 import com.alibaba.otter.canal.client.adapter.support.OuterAdapterConfig;
 import com.alibaba.otter.canal.client.adapter.support.SPI;
 import org.elasticsearch.action.search.SearchResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.util.LinkedHashMap;
@@ -26,6 +28,7 @@ import java.util.Properties;
 @SPI("es8")
 public class ES8xAdapter extends ESAdapter {
 
+    private static final Logger log = LoggerFactory.getLogger(ES8xAdapter.class);
     private ESConnection esConnection;
 
     public ESConnection getEsConnection() {
@@ -67,6 +70,7 @@ public class ES8xAdapter extends ESAdapter {
         EtlResult etlResult = new EtlResult();
         ESSyncConfig config = esSyncConfig.get(task);
         if (config != null) {
+            log.info("导入数据到ES，es8 etl config not null");
             DataSource dataSource = DatasourceConfig.DATA_SOURCES.get(config.getDataSourceKey());
             ESEtlService esEtlService = new ESEtlService(esConnection, config);
             if (dataSource != null) {
@@ -77,6 +81,7 @@ public class ES8xAdapter extends ESAdapter {
                 return etlResult;
             }
         } else {
+            log.info("导入数据到ES，es8 etl config is null");
             StringBuilder resultMsg = new StringBuilder();
             boolean resSuccess = true;
             for (ESSyncConfig configTmp : esSyncConfig.values()) {
