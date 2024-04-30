@@ -83,8 +83,7 @@ FROM
 	sys_unituser uu
 	LEFT JOIN sys_unitinfo u ON uu.DEPT_ID = u.ID
 	LEFT JOIN sys_unitinfo unit ON uu.UNIT_ID = unit.id
-	LEFT JOIN sys_userinfo ui ON uu.USER_ID = ui.ID 
-	order by uu.id"
+	LEFT JOIN sys_userinfo ui ON uu.USER_ID = ui.ID "
   #  objFields:
   #    _labels: array:;
   etlCondition: "where uu.ID>={} or u.ID>={} or ui.ID>={}"
