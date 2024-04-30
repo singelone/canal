@@ -87,7 +87,6 @@ public abstract class AbstractEtlService {
                 for (long i = 0; i < workerCnt; i++) {
                     offset = size * i;
                     String sqlFinal = sql + " LIMIT " + offset + "," + size;
-                    logger.info("导入数据sql为:{}", sqlFinal);
                     Future<Boolean> future = executor.submit(() -> executeSqlImport(dataSource,
                         sqlFinal,
                         values,

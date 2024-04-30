@@ -150,11 +150,24 @@ public class ESEtlService extends AbstractEtlService {
                         if (esBulkRequest.numberOfActions() % mapping.getCommitBatch() == 0
                             && esBulkRequest.numberOfActions() > 0) {
                             long esBatchBegin = System.currentTimeMillis();
-                            ESBulkResponse rp = esBulkRequest.bulk();
-                            if (rp.hasFailures()) {
-                                rp.processFailBulkResponse("全量数据 etl 异常 ");
+                            try {
+                                ESBulkResponse rp = esBulkRequest.bulk();
+                                if (rp.hasFailures()) {
+                                    rp.processFailBulkResponse("全量数据 etl 异常 ");
+                                }
+                            } catch (Exception e) {
+                                if (e.getMessage().contains("200 OK")) {
+                                    logger.info("无法解析ES返回值,但数据已同步");
+                                } else {
+                                    throw e;
+                                }
                             }
 
+                            logger.info("全量数据批量导入批次耗时: {}, es执行时间: {}, 批次大小: {}, index; {}",
+                                    (System.currentTimeMillis() - batchBegin),
+                                    (System.currentTimeMillis() - esBatchBegin),
+                                    esBulkRequest.numberOfActions(),
+                                    mapping.getIndex());
                             if (logger.isTraceEnabled()) {
                                 logger.trace("全量数据批量导入批次耗时: {}, es执行时间: {}, 批次大小: {}, index; {}",
                                     (System.currentTimeMillis() - batchBegin),
@@ -171,10 +184,23 @@ public class ESEtlService extends AbstractEtlService {
 
                     if (esBulkRequest.numberOfActions() > 0) {
                         long esBatchBegin = System.currentTimeMillis();
-                        ESBulkResponse rp = esBulkRequest.bulk();
-                        if (rp.hasFailures()) {
-                            rp.processFailBulkResponse("全量数据 etl 异常 ");
+                        try {
+                            ESBulkResponse rp = esBulkRequest.bulk();
+                            if (rp.hasFailures()) {
+                                rp.processFailBulkResponse("全量数据 etl 异常 ");
+                            }
+                        } catch (Exception e) {
+                            if (e.getMessage().contains("200 OK")) {
+                                logger.info("无法解析ES返回值,但数据已同步");
+                            } else {
+                                throw e;
+                            }
                         }
+                        logger.info("全量数据批量导入最后批次耗时: {}, es执行时间: {}, 批次大小: {}, index; {}",
+                                (System.currentTimeMillis() - batchBegin),
+                                (System.currentTimeMillis() - esBatchBegin),
+                                esBulkRequest.numberOfActions(),
+                                mapping.getIndex());
                         if (logger.isTraceEnabled()) {
                             logger.trace("全量数据批量导入最后批次耗时: {}, es执行时间: {}, 批次大小: {}, index; {}",
                                 (System.currentTimeMillis() - batchBegin),
@@ -187,7 +213,7 @@ public class ESEtlService extends AbstractEtlService {
                     if (e.getMessage().contains("200 OK")) {
                         logger.info("无法解析ES返回值,但数据已同步");
                     } else {
-                        logger.error(e.getMessage(), e);
+                        logger.error("全量数据批量导入失败：{}，SQL：{}",e.getMessage(), sql, e);
                         errMsg.add(mapping.getIndex() + " etl failed! ==>" + e.getMessage());
                         throw new RuntimeException(e);
                     }
